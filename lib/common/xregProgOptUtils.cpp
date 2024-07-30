@@ -43,8 +43,9 @@
 #include <itkVersion.h>
 #include <vtkVersion.h>
 
-#include <tbb/tbb_stddef.h>
-#include <tbb/task_scheduler_init.h>
+// #include <tbb/tbb_stddef.h>
+// #include <tbb/task_scheduler_init.h>
+#include <tbb/task_arena.h>
 
 #include <opencv2/core/version.hpp>
 
@@ -245,11 +246,11 @@ const std::string kTBB_MAX_NUM_THREADS_ARG_STR = "tbb-max-threads";
 /// created here. This is outside of the program options class, so that
 /// a user option will still have precedence even when the program
 /// options are destructed.
-std::unique_ptr<tbb::task_scheduler_init>& ProgOptsTBBTaskSchedInit()
+std::unique_ptr<tbb::task_arena>& ProgOptsTBBTaskSchedInit()
 {
-  static std::unique_ptr<tbb::task_scheduler_init> tbb_sched_init;
+  static std::unique_ptr<tbb::task_arena> tbb_task_arena;
 
-  return tbb_sched_init;
+  return tbb_task_arena;
 }
 
 const std::vector<std::tuple<std::string,std::string>>&
@@ -1048,9 +1049,6 @@ void xreg::ProgOpts::print_help(std::ostream& out) const
 
   out << "    VTK Version: " << vtkVersion::GetVTKVersion() << std::endl;
 
-  out << "    TBB Version: " << TBB_VERSION_MAJOR << '.' << TBB_VERSION_MINOR
-      << " (interface: "<< TBB_INTERFACE_VERSION_MAJOR << '.' << (TBB_INTERFACE_VERSION - (TBB_INTERFACE_VERSION_MAJOR * 1000)) << ')' << std::endl;
-
   out << " OpenCV Version: " << CV_MAJOR_VERSION << '.' << CV_MINOR_VERSION << std::endl;
 
   {
@@ -1348,7 +1346,7 @@ void xreg::ProgOpts::parse(int argc, char* argv[])
   if (tbb_max_num_threads_opt_added_ && has(kTBB_MAX_NUM_THREADS_ARG_STR))
   {
     ProgOptsTBBTaskSchedInit().reset(
-        new tbb::task_scheduler_init(get(kTBB_MAX_NUM_THREADS_ARG_STR).as_uint32()));
+        new tbb::task_arena(get(kTBB_MAX_NUM_THREADS_ARG_STR).as_uint32()));
   }
 
   if (print_help_backend_str_ && has("backend"))

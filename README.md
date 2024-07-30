@@ -50,11 +50,29 @@ Although the following capabilities currently only exist in an internal version 
 
 ## Building
 A standard CMake configure/generate process is used.
-It is recommended to generate Ninja build files for fast compilation. 
-Example scripts for building all dependencies and the xReg repository are provided for POSIX systems (e.g. MacOS and Linux) [here](example_build_script) and [here](example_build_script_2), and also for [Windows](example_build_script_win.cmd).
-The [docker](docker) directory demonstrates how Docker may be used to build the software.
+It is recommended to generate Ninja build files for fast compilation.
 
-### Dependencies
+### Building on Linux
+
+Install the necessary dependencies using the system package manager:
+```bash
+sudo apt install cmake ninja-build libboost-all-dev libeigen3-dev libfmt-dev libtbb-dev libnlopt-dev libopencv-dev libviennacl-dev libhdf5-dev ffmpeg
+```
+
+Install other dependencies by downloading and building from source:
+  * [VTK](https://vtk.org) (9.3.1)
+  * [ITK](https://itk.org) (5.3.0)
+  * [NLopt](https://github.com/stevengj/nlopt) (2.7.1)
+
+Then, build xReg software:
+```bash
+mkdir build
+cd build
+cmake -G Ninja ..
+ninja
+```
+
+### Dependencies (older versions)
 * C++ 11 compatible compiler
   * Tested with various flavors of gcc and Apple clang, and Visual Studio 2019
 * External libraries (compatible versions are listed):

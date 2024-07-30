@@ -109,7 +109,7 @@ private:
     void operator()(const RangeType& r) const;
   };
 
-  static constexpr double kDEFAULT_SIGMA = 0.3;
+  inline static constexpr double kDEFAULT_SIGMA = 0.3;
 
   enum { kDEFAULT_LAMBDA = 50 };
 
